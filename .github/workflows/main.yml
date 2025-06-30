@@ -13,21 +13,21 @@ jobs:
         uses: actions/checkout@v2
 
       # Step 2: Install curl
-      - name: Install curl
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl
+  #    - name: Install curl
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get install -y curl
 
       # Step 3: Install jq
-      - name: Install jq
-        run: |
-          sudo apt-get install -y jq
+#      - name: Install jq
+#        run: |
+  #        sudo apt-get install -y jq
 
       # Step 4: Fetch IP information from ipinfo.io
       - name: Fetch IP information
         run: |
           echo "Fetching IP information from ipinfo.io..."
-          ip_info=$(curl -s https://ipinfo.io/json)  # Fetch IP info in JSON format
+          ip_info=$(curl -s https://ipinfo.io/json?token=7c14babcefd5b9)  # Fetch IP info in JSON format
           echo "IP info fetched successfully."
 
       # Step 5: Display the raw IP info JSON
