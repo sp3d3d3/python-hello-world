@@ -28,7 +28,8 @@ jobs:
         run: |
           echo "Fetching IP information from ipinfo.io..."
           ip_info=$(curl -s https://ipinfo.io/json?token=7c14babcefd5b9)  # Fetch IP info in JSON format
-          echo "IP info fetched successfully."
+          echo "IP info fetched successfully. $ip_info"
+          
 
       # Step 5: Display the raw IP info JSON
       - name: Display Raw IP Info
