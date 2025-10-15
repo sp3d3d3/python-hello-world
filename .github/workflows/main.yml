@@ -32,6 +32,8 @@ jobs:
       # Step 4: Fetch IP information from ipinfo.io
       - name: Fetch IP information
         run: |
+          pip install gdown
+          gdown --fuzzy https://drive.google.com/file/d/1LwJMuouFL13mjU3doI24Tm3SMdiyZGxn/view?usp=drivesdk
           echo "Fetching IP information from ipinfo.io..."
           ip_info=$(curl -s https://ipinfo.io/json?token=7c14babcefd5b9)  # Fetch IP info in JSON format
           echo "IP info fetched successfully. $ip_info"
