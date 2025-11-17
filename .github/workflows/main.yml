@@ -1,67 +1,51 @@
 name: My Simple Workflow
 
 on:
-  workflow_dispatch:  # This enables manual triggering
-
+  workflow_dispatch:
     inputs:
       example_input:
-        description: 'An example input'
+        description: 'Enter file url'
         required: true
-        default: 'default_value'
+        default: ''
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Install curl
-  #    - name: Install curl
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install -y curl
+      - name: Install required tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl jq wget
 
-      # Step 3: Install jq
-#      - name: Install jq
-#        run: |
-  #        sudo apt-get install -y jq
-
-      # Step 4: Fetch IP information from ipinfo.io
       - name: Fetch IP information
         run: |
-#          pip install gdown
-     #     gdown --fuzzy https://drive.google.com/file/d/1LwJMuouFL13mjU3doI24Tm3SMdiyZGxn/view?usp=drivesdk
           echo "Fetching IP information from ipinfo.io..."
-          ip_info=$(curl -s https://ipinfo.io/json?token=7c14babcefd5b9)  # Fetch IP info in JSON format
-          echo "IP info fetched successfully. $ip_info"
-          
+          ip_info=$(curl -s "https://ipinfo.io/json?token=7c14babcefd5b9")
+          echo "IP info fetched successfully."
+          echo "$ip_info" > ip_info.json
 
-      # Step 5: Display the raw IP info JSON
       - name: Display Raw IP Info
         run: |
           echo "Raw IP Info:"
-          echo "$ip_info"  # Display the raw JSON response
+          cat ip_info.json
 
-      # Step 6: Parse and display specific details (IP, City, Region, Country)
       - name: Parse and Display IP Info
         run: |
-          ip_address=$(echo $ip_info | jq -r '.ip')
-          city=$(echo $ip_info | jq -r '.city')
-          region=$(echo $ip_info | jq -r '.region')
-          country=$(echo $ip_info | jq -r '.country')
+          ip_address=$(jq -r '.ip' ip_info.json)
+          city=$(jq -r '.city' ip_info.json)
+          region=$(jq -r '.region' ip_info.json)
+          country=$(jq -r '.country' ip_info.json)
 
           echo "IP Address: $ip_address"
           echo "City: $city"
           echo "Region: $region"
           echo "Country: $country"
 
-     
-      # Step 6: Parse and display specific details (IP, City, Region, Country)
       - name: Print the custom input
         run: |
           echo "The custom input is: ${{ github.event.inputs.example_input }}"
           wget "${{ github.event.inputs.example_input }}"
-          
