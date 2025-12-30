@@ -24,7 +24,7 @@ jobs:
         env:
           VIDEO_URL: ${{ inputs.video_url }}
         run: |
-          curl -L -o input_video.mkv "$VIDEO_URL"
+          curl -L -o input_video.mkv --globoff "$VIDEO_URL"
       - name: Check Downloaded File
         run: |
           ls -lh input_video.mkv
