@@ -7,6 +7,10 @@ on:
         description: 'Hydrax API Key'
         required: true
         type: string
+      video_url:
+        description: 'Video Download URL'
+        required: true
+        type: string
 
 jobs:
   process-video:
@@ -22,8 +26,10 @@ jobs:
           sudo apt-get install -y ffmpeg
 
       - name: Download Video
+        env:
+          VIDEO_URL: ${{ inputs.video_url }}
         run: |
-          curl -L -o input_video.mkv "https://mtyh6.b-cdn.net/s3/upload/videos/2025/12/%5BFibwatch.Com%5DMan.Woman.Wild.S02E05-08.1080p..mkv"
+          curl -L -o input_video.mkv "${VIDEO_URL}"
 
       - name: Check Downloaded File
         run: |
