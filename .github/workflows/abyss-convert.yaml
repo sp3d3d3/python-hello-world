@@ -1,0 +1,57 @@
+name: Download, Convert and Upload Video
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_key:
+        description: 'Hydrax API Key'
+        required: true
+        type: string
+
+jobs:
+  process-video:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+      
+      - name: Download Video
+        run: |
+          curl -L -o input_video.mkv "https://mtyh6.b-cdn.net/s3/upload/videos/2025/12/[Fibwatch.Com]Man.Woman.Wild.S02E05-08.1080p..mkv"
+      
+      - name: Check Downloaded File
+        run: |
+          ls -lh input_video.mkv
+          ffmpeg -i input_video.mkv 2>&1 | grep "Duration\|Stream"
+      
+      - name: Convert to H.264 + AAC
+        run: |
+          ffmpeg -i input_video.mkv \
+            -c:v libx264 \
+            -preset medium \
+            -crf 23 \
+            -c:a aac \
+            -b:a 192k \
+            -movflags +faststart \
+            converted_video.mkv
+      
+      - name: Check Converted File
+        run: |
+          ls -lh converted_video.mkv
+          ffmpeg -i converted_video.mkv 2>&1 | grep "Duration\|Stream"
+      
+      - name: Upload to Hydrax
+        run: |
+          response=$(curl -F "file=@converted_video.mkv" "https://up.hydrax.net/${{ inputs.api_key }}")
+          echo "Upload response: $response"
+          echo "$response" > upload_response.txt
+      
+      - name: Upload Response Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: upload-response
+          path: upload_response.txt
+          retention-days: 7
